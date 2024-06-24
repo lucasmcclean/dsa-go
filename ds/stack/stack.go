@@ -3,7 +3,7 @@ package stack
 import (
 	"sync"
 
-	"github.com/ljmcclean/dsa-go/utils"
+	u "github.com/ljmcclean/dsa-go/utils"
 )
 
 type UnsafeStack[T any] struct {
@@ -27,7 +27,7 @@ func (stack *UnsafeStack[T]) Push(elem T) {
 
 func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, utils.ErrEmptySlice
+		return elem, u.ErrEmptySlice
 	}
 	elem = stack.elements[len(stack.elements)-1]
 	stack.elements = stack.elements[:len(stack.elements)-1]
@@ -37,7 +37,7 @@ func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
 
 func (stack *UnsafeStack[T]) Peek() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, utils.ErrEmptySlice
+		return elem, u.ErrEmptySlice
 	}
 	return stack.elements[len(stack.elements)-1], nil
 }
