@@ -1,6 +1,8 @@
 package binsearch
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestSearchInts(t *testing.T) {
 	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -42,4 +44,11 @@ func TestSearchStrings(t *testing.T) {
 	if got != want {
 		t.Errorf("Got %d, wanted %d", got, want)
 	}
+}
+
+func TestSearchNil(t *testing.T) {
+	var slice []int
+	_ = Search(slice, 1)
+	slice = make([]int, 10)
+	_ = Search(slice, 1)
 }

@@ -10,6 +10,7 @@ import (
 func TestSortEmpty(t *testing.T) {
 	slice := utils.GenSliceEmpty(5)
 	Sort(slice)
+	fmt.Println(slice)
 	fmt.Println("Completed Empty")
 }
 

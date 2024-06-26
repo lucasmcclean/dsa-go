@@ -1,4 +1,4 @@
-package hsort
+package isort
 
 import (
 	"fmt"
