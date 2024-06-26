@@ -5,6 +5,13 @@ import (
 )
 
 func Sort[O u.Ordered](arr []O) {
+	if arr == nil {
+		return
+	}
+	USort(arr)
+}
+
+func USort[O u.Ordered](arr []O) {
 	length := len(arr)
 	heapify(arr, length)
 	for i := length - 1; i >= 0; i-- {

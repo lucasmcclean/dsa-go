@@ -7,23 +7,23 @@ import (
 
 const insertionCutoff = 30
 
-// Helper to ensure arr isn't nil
 func Sort[O u.Ordered](arr []O) {
 	if arr == nil {
 		return
 	}
-	sort(arr)
+	USort(arr)
 }
 
 // quicksort with insertion sort and tail recursion optimization
-func sort[O u.Ordered](arr []O) {
+// *UnsafeSort* does not verify that arr isn't nil
+func USort[O u.Ordered](arr []O) {
 	for {
 		if len(arr) < insertionCutoff {
-			isort.Sort(arr)
+			isort.USort(arr)
 			return
 		}
 		pil, pir := partition(arr)
-		sort(arr[:pil])
+		USort(arr[:pil])
 		arr = arr[pir:]
 	}
 }

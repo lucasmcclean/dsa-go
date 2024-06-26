@@ -11,10 +11,15 @@ func PSort[O u.Ordered](arr []O) {
 	if arr == nil {
 		return
 	}
-	pSort(arr)
+	prepareSort(arr)
 }
 
-func pSort[O u.Ordered](arr []O) {
+// *UnsafeParallelSort* does not verify that arr isn't nil
+func UPSort[O u.Ordered](arr []O) {
+	prepareSort(arr)
+}
+
+func prepareSort[O u.Ordered](arr []O) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	psort(arr, &wg)
