@@ -8,6 +8,13 @@ import (
 )
 
 func PSort[O u.Ordered](arr []O) {
+	if arr == nil {
+		return
+	}
+	pSort(arr)
+}
+
+func pSort[O u.Ordered](arr []O) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	psort(arr, &wg)
@@ -16,12 +23,14 @@ func PSort[O u.Ordered](arr []O) {
 
 func psort[O u.Ordered](arr []O, wg *sync.WaitGroup) {
 	defer wg.Done()
-	if len(arr) < 15 {
-		isort.Sort(arr)
-		return
+	for {
+		if len(arr) < insertionCutoff {
+			isort.Sort(arr)
+			return
+		}
+		pil, pir := partition(arr)
+		wg.Add(1)
+		go psort(arr[:pil], wg)
+		arr = arr[pir:]
 	}
-	pivIdx := partition(arr)
-	wg.Add(2)
-	go psort(arr[:pivIdx], wg)
-	go psort(arr[pivIdx:], wg)
 }
