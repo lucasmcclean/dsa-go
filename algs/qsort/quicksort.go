@@ -1,34 +1,29 @@
 package qsort
 
 import (
-	"github.com/ljmcclean/dsa-go/algs/isort"
 	u "github.com/ljmcclean/dsa-go/utils"
 )
 
-const insertionCutoff = 30
-
 func Sort[O u.Ordered](arr []O) {
 	if arr == nil {
+		return
+	} else if len(arr) == 1 {
 		return
 	}
 	USort(arr)
 }
 
-// quicksort with insertion sort and tail recursion optimization
-// *UnsafeSort* does not verify that arr isn't nil
+// Bypasses the check made by Sort to ensure arr isn't nil
+// and that the arr is longer than one element.
 func USort[O u.Ordered](arr []O) {
-	for {
-		if len(arr) < insertionCutoff {
-			isort.USort(arr)
-			return
-		}
+	for len(arr) > 0 {
 		pil, pir := partition(arr)
 		USort(arr[:pil])
 		arr = arr[pir:]
 	}
 }
 
-// 3 way partition for case of duplicate elements
+// Three-way partition for case of duplicate elements.
 func partition[O u.Ordered](arr []O) (lPivIdx, rPivIdx int) {
 	piv := ninther(arr)
 	l, r := 0, len(arr)
@@ -48,19 +43,18 @@ func partition[O u.Ordered](arr []O) (lPivIdx, rPivIdx int) {
 	return l, r
 }
 
-// implementation of Tukey's ninther (median of medians)
+// Implementation of Tukey's ninther (median of medians) to
+// ensure more consistent performance.
 func ninther[O u.Ordered](arr []O) (piv O) {
 	n := len(arr)
-	mid := n / 2
-	deltad := n / 4
-	delta := n / 8
-	a := medOfThree(arr, 0, delta, deltad)
-	b := medOfThree(arr, mid-delta, mid, mid+delta)
-	c := medOfThree(arr, n-deltad, n-delta, n-1)
+	a := medOfThree(arr, 0, n/6, n/3)
+	b := medOfThree(arr, n/3, 5*n/6, 2*n/3)
+	c := medOfThree(arr, 2*n/3, 5*n/6, n-1)
 	return arr[medOfThree(arr, a, b, c)]
 }
 
-// find the median value and return its index
+// Find the median value of arr between three indexes and return
+// that index.
 func medOfThree[O u.Ordered](arr []O, lo, med, hi int) (pivIdx int) {
 	a, b, c := arr[lo], arr[med], arr[hi]
 	if a < b {
