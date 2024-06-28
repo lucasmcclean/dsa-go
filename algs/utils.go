@@ -1,10 +1,14 @@
-package utils
+package algs
 
 import (
 	"math/rand"
 	"time"
 	"unsafe"
+
+	"github.com/ljmcclean/dsa-go/types"
 )
+
+const MaxInt = 2147483647
 
 func GenSliceStr(size int, strLen int) []string {
 	var slice []string
@@ -54,7 +58,7 @@ func GenSliceNil() []int {
 	return nil
 }
 
-func IsSorted[O Ordered](slice []O) bool {
+func IsSorted[O types.Ordered](slice []O) bool {
 	for i := 1; i < len(slice); i++ {
 		if slice[i] < slice[i-1] {
 			return false

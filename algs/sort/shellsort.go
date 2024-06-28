@@ -1,19 +1,19 @@
-package ssort
+package sort
 
-import u "github.com/ljmcclean/dsa-go/utils"
+import "github.com/ljmcclean/dsa-go/types"
 
-func Sort[O u.Ordered](arr []O, gap int) {
+func ShellSort[O types.Ordered](arr []O, gap int) {
 	if arr == nil {
 		return
 	} else if len(arr) == 1 {
 		return
 	}
-	USort(arr, gap)
+	UShellSort(arr, gap)
 }
 
 // Bypasses the check made by Sort to ensure arr isn't nil
 // and that the arr is longer than one element.
-func USort[O u.Ordered](arr []O, gap int) {
+func UShellSort[O types.Ordered](arr []O, gap int) {
 	length := len(arr)
 	h := 1
 	for h < length/gap {

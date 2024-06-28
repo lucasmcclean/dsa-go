@@ -1,21 +1,19 @@
-package hsort
+package sort
 
-import (
-	u "github.com/ljmcclean/dsa-go/utils"
-)
+import "github.com/ljmcclean/dsa-go/types"
 
-func Sort[O u.Ordered](arr []O) {
+func HeapSort[O types.Ordered](arr []O) {
 	if arr == nil {
 		return
 	} else if len(arr) == 1 {
 		return
 	}
-	USort(arr)
+	UHeapSort(arr)
 }
 
 // Bypasses the check made by Sort to ensure arr isn't nil
 // and that the arr is longer than one element.
-func USort[O u.Ordered](arr []O) {
+func UHeapSort[O types.Ordered](arr []O) {
 	length := len(arr)
 	heapify(arr, length)
 	for i := length - 1; i >= 0; i-- {
@@ -24,13 +22,13 @@ func USort[O u.Ordered](arr []O) {
 	}
 }
 
-func heapify[O u.Ordered](arr []O, length int) {
+func heapify[O types.Ordered](arr []O, length int) {
 	for i := (length/2 - 1); i >= 0; i-- {
 		siftDown(arr, length, i)
 	}
 }
 
-func siftDown[O u.Ordered](arr []O, length int, root int) {
+func siftDown[O types.Ordered](arr []O, length int, root int) {
 	for {
 		child := root*2 + 1
 		if child >= length {

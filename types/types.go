@@ -1,4 +1,4 @@
-package utils
+package types
 
 type Ordered interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 |

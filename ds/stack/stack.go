@@ -3,80 +3,83 @@ package stack
 import (
 	"sync"
 
-	u "github.com/ljmcclean/dsa-go/utils"
+	"github.com/ljmcclean/dsa-go/ds"
 )
 
+// Not protected from paralell read/writes. Use the normal stack
+// if you are accessing this data concurrently.
 type UnsafeStack[T any] struct {
 	length   int
-	elements []T
+	Elements []T
 }
 
 func Unsafe[T any](capacity int, elems ...T) (stack *UnsafeStack[T]) {
 	stack = &UnsafeStack[T]{
-		elements: make([]T, 0, capacity),
+		Elements: make([]T, 0, capacity),
 		length:   len(elems),
 	}
-	stack.elements = append(stack.elements, elems...)
+	stack.Elements = append(stack.Elements, elems...)
 	return stack
 }
 
 func (stack *UnsafeStack[T]) Push(elem T) {
-	stack.elements = append(stack.elements, elem)
+	stack.Elements = append(stack.Elements, elem)
 	stack.length++
 }
 
 func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, u.ErrEmptySlice
+		return elem, ds.ErrEmptySlice
 	}
-	elem = stack.elements[len(stack.elements)-1]
-	stack.elements = stack.elements[:len(stack.elements)-1]
+	elem = stack.Elements[len(stack.Elements)-1]
+	stack.Elements = stack.Elements[:len(stack.Elements)-1]
 	stack.length--
 	return elem, nil
 }
 
 func (stack *UnsafeStack[T]) Peek() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, u.ErrEmptySlice
+		return elem, ds.ErrEmptySlice
 	}
-	return stack.elements[len(stack.elements)-1], nil
+	return stack.Elements[len(stack.Elements)-1], nil
 }
 
 func (stack *UnsafeStack[T]) Len() (length int) {
 	return stack.length
 }
 
+// Implements a RWMutex for safe concurrent access.
 type Stack[T any] struct {
 	mu    sync.RWMutex
-	stack UnsafeStack[T]
+	Stack UnsafeStack[T]
 }
 
 func New[T any](capacity int, elems ...T) (stack *Stack[T]) {
 	return &Stack[T]{
-		stack: *Unsafe(capacity, elems...),
+		Stack: *Unsafe(capacity, elems...),
 	}
 }
 
 func (s *Stack[T]) Push(elem T) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.stack.Push(elem)
+	s.Stack.Push(elem)
 }
 
 func (s *Stack[T]) Pop() (elem T, err error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.stack.Pop()
+	return s.Stack.Pop()
 }
 
 func (s *Stack[T]) Peek() (elem T, err error) {
 	s.mu.RLock()
 	s.mu.RUnlock()
-	return s.stack.Peek()
+	return s.Stack.Peek()
 }
 
 func (s *Stack[T]) Len() (length int) {
 	s.mu.RLock()
 	s.mu.RUnlock()
-	return s.stack.Len()
+	return s.Stack.Len()
 }

@@ -1,30 +1,28 @@
-package qsort
+package sort
 
-import (
-	u "github.com/ljmcclean/dsa-go/utils"
-)
+import "github.com/ljmcclean/dsa-go/types"
 
-func Sort[O u.Ordered](arr []O) {
+func QuickSort[O types.Ordered](arr []O) {
 	if arr == nil {
 		return
 	} else if len(arr) == 1 {
 		return
 	}
-	USort(arr)
+	UQuickSort(arr)
 }
 
 // Bypasses the check made by Sort to ensure arr isn't nil
 // and that the arr is longer than one element.
-func USort[O u.Ordered](arr []O) {
+func UQuickSort[O types.Ordered](arr []O) {
 	for len(arr) > 0 {
 		pil, pir := partition(arr)
-		USort(arr[:pil])
+		UQuickSort(arr[:pil])
 		arr = arr[pir:]
 	}
 }
 
 // Three-way partition for case of duplicate elements.
-func partition[O u.Ordered](arr []O) (lPivIdx, rPivIdx int) {
+func partition[O types.Ordered](arr []O) (lPivIdx, rPivIdx int) {
 	piv := ninther(arr)
 	l, r := 0, len(arr)
 	for i := 0; i < r; {
@@ -45,7 +43,7 @@ func partition[O u.Ordered](arr []O) (lPivIdx, rPivIdx int) {
 
 // Implementation of Tukey's ninther (median of medians) to
 // ensure more consistent performance.
-func ninther[O u.Ordered](arr []O) (piv O) {
+func ninther[O types.Ordered](arr []O) (piv O) {
 	n := len(arr)
 	a := medOfThree(arr, 0, n/6, n/3)
 	b := medOfThree(arr, n/3, 5*n/6, 2*n/3)
@@ -55,7 +53,7 @@ func ninther[O u.Ordered](arr []O) (piv O) {
 
 // Find the median value of arr between three indexes and return
 // that index.
-func medOfThree[O u.Ordered](arr []O, lo, med, hi int) (pivIdx int) {
+func medOfThree[O types.Ordered](arr []O, lo, med, hi int) (pivIdx int) {
 	a, b, c := arr[lo], arr[med], arr[hi]
 	if a < b {
 		switch {
