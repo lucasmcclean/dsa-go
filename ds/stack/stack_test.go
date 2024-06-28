@@ -1,14 +1,13 @@
-package stack_test
+package stack
 
 import (
 	"testing"
 
-	s "github.com/ljmcclean/dsa-go/ds/stack"
 	"github.com/ljmcclean/dsa-go/types"
 )
 
 func TestStackWithInts(t *testing.T) {
-	stack := s.New(10, 1, 2, 3, 4, 5)
+	stack := New(10, 1, 2, 3, 4, 5)
 
 	got, _ := stack.Peek()
 	want := 5
@@ -30,7 +29,7 @@ func TestStackWithInts(t *testing.T) {
 }
 
 func TestStackWithStrings(t *testing.T) {
-	stack := s.New(10, "One", "Two", "Three", "Four", "Five")
+	stack := New(10, "One", "Two", "Three", "Four", "Five")
 
 	got, _ := stack.Peek()
 	want := "Five"
@@ -52,7 +51,7 @@ func TestStackWithStrings(t *testing.T) {
 }
 
 func TestEmptyStack(t *testing.T) {
-	stack := s.New[int](10)
+	stack := New[int](10)
 
 	_, got := stack.Peek()
 	want := types.ErrEmptySlice
