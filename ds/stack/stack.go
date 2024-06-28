@@ -3,7 +3,7 @@ package stack
 import (
 	"sync"
 
-	"github.com/ljmcclean/dsa-go/ds"
+	"github.com/ljmcclean/dsa-go/types"
 )
 
 // Not protected from paralell read/writes. Use the normal stack
@@ -29,7 +29,7 @@ func (stack *UnsafeStack[T]) Push(elem T) {
 
 func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, ds.ErrEmptySlice
+		return elem, types.ErrEmptySlice
 	}
 	elem = stack.Elements[len(stack.Elements)-1]
 	stack.Elements = stack.Elements[:len(stack.Elements)-1]
@@ -39,7 +39,7 @@ func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
 
 func (stack *UnsafeStack[T]) Peek() (elem T, err error) {
 	if stack.length == 0 {
-		return elem, ds.ErrEmptySlice
+		return elem, types.ErrEmptySlice
 	}
 	return stack.Elements[len(stack.Elements)-1], nil
 }

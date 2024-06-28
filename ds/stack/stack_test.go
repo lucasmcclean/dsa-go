@@ -3,8 +3,8 @@ package stack_test
 import (
 	"testing"
 
-	s "github.com/ljmcclean/dsa-go/stack"
-	"github.com/ljmcclean/dsa-go/utils"
+	s "github.com/ljmcclean/dsa-go/ds/stack"
+	"github.com/ljmcclean/dsa-go/types"
 )
 
 func TestStackWithInts(t *testing.T) {
@@ -55,7 +55,7 @@ func TestEmptyStack(t *testing.T) {
 	stack := s.New[int](10)
 
 	_, got := stack.Peek()
-	want := utils.ErrEmptySlice
+	want := types.ErrEmptySlice
 	if got != want {
 		t.Errorf("Got %e, wanted %e", got, want)
 	}
