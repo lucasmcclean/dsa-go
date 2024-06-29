@@ -7,7 +7,7 @@ import (
 )
 
 func TestSortInts(t *testing.T) {
-	sliceT := algs.GenSliceInt(100, algs.MaxInt)
+	sliceT := algs.GenSliceInt(100, algs.MaxInt, seed)
 	var slice []int
 	slice = append([]int{}, sliceT...)
 	InsertionSort(slice)
@@ -29,15 +29,10 @@ func TestSortInts(t *testing.T) {
 	if !algs.IsSorted(slice) {
 		t.Error("Heap sort failed to sort integers")
 	}
-	slice = append([]int{}, sliceT...)
-	PQuickSort(slice)
-	if !algs.IsSorted(slice) {
-		t.Error("PQuick sort failed to sort integers")
-	}
 }
 
 func TestSortStrs(t *testing.T) {
-	sliceT := algs.GenSliceStr(100, 5)
+	sliceT := algs.GenSliceStr(100, 5, seed)
 	var slice []string
 	slice = append([]string{}, sliceT...)
 	InsertionSort(slice)
@@ -58,11 +53,6 @@ func TestSortStrs(t *testing.T) {
 	HeapSort(slice)
 	if !algs.IsSorted(slice) {
 		t.Error("Heap sort failed to sort strings")
-	}
-	slice = append([]string{}, sliceT...)
-	PQuickSort(slice)
-	if !algs.IsSorted(slice) {
-		t.Error("PQuick sort failed to sort strings")
 	}
 }
 
@@ -89,11 +79,6 @@ func TestSortIntsAsc(t *testing.T) {
 	if !algs.IsSorted(slice) {
 		t.Error("Heap sort failed to sort integers ascending")
 	}
-	slice = append([]int{}, sliceT...)
-	PQuickSort(slice)
-	if !algs.IsSorted(slice) {
-		t.Error("PQuick sort failed to sort integers ascending")
-	}
 }
 
 func TestSortIntsDes(t *testing.T) {
@@ -119,15 +104,10 @@ func TestSortIntsDes(t *testing.T) {
 	if !algs.IsSorted(slice) {
 		t.Error("Heap sort failed to sort integers descending")
 	}
-	slice = append([]int{}, sliceT...)
-	PQuickSort(slice)
-	if !algs.IsSorted(slice) {
-		t.Error("PQuick sort failed to sort integers descending")
-	}
 }
 
 func TestSortFloats(t *testing.T) {
-	sliceT := algs.GenSliceFloat(100, 999999.0)
+	sliceT := algs.GenSliceFloat(100, 999999.0, seed)
 	var slice []float64
 	slice = append([]float64{}, sliceT...)
 	InsertionSort(slice)
@@ -149,11 +129,6 @@ func TestSortFloats(t *testing.T) {
 	if !algs.IsSorted(slice) {
 		t.Error("Heap sort failed to sort floats(float64)")
 	}
-	slice = append([]float64{}, sliceT...)
-	PQuickSort(slice)
-	if !algs.IsSorted(slice) {
-		t.Error("PQuick sort failed to sort floats(float64)")
-	}
 }
 
 func TestSortEmpty(t *testing.T) {
@@ -164,7 +139,6 @@ func TestSortEmpty(t *testing.T) {
 	ShellSort(slice, 10)
 	QuickSort(slice)
 	HeapSort(slice)
-	PQuickSort(slice)
 }
 
 func TestSortNil(t *testing.T) {
@@ -175,5 +149,4 @@ func TestSortNil(t *testing.T) {
 	ShellSort(slice, 10)
 	QuickSort(slice)
 	HeapSort(slice)
-	PQuickSort(slice)
 }

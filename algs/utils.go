@@ -2,7 +2,6 @@ package algs
 
 import (
 	"math/rand"
-	"time"
 	"unsafe"
 
 	"github.com/ljmcclean/dsa-go/types"
@@ -10,22 +9,26 @@ import (
 
 const MaxInt = 2147483647
 
-func GenSliceStr(size int, strLen int) []string {
+// Generates a slice of strings.
+func GenSliceStr(size int, strLen int, seed int64) []string {
 	var slice []string
 	for i := 0; i < size; i++ {
-		slice = append(slice, RandString(strLen))
+		slice = append(slice, RandString(strLen, seed))
 	}
 	return slice
 }
 
-func GenSliceInt(size int, intSize int) []int {
+// Generates a slice of positive integers.
+func GenSliceInt(size int, intSize int, seed int64) []int {
 	var slice []int
+	r := rand.New(rand.NewSource(seed))
 	for i := 0; i < size; i++ {
-		slice = append(slice, rand.Intn(intSize))
+		slice = append(slice, r.Intn(intSize))
 	}
 	return slice
 }
 
+// Generates a slice of ascending integers from 0 to 'size'.
 func GenSliceIntAsc(size int) []int {
 	var slice []int
 	for i := 0; i < size; i++ {
@@ -34,6 +37,7 @@ func GenSliceIntAsc(size int) []int {
 	return slice
 }
 
+// Generates a slice of descending integers from 'size' to 0.
 func GenSliceIntDes(size int) []int {
 	var slice []int
 	for i := size; i >= 0; i-- {
@@ -42,22 +46,27 @@ func GenSliceIntDes(size int) []int {
 	return slice
 }
 
-func GenSliceFloat(size int, floatSize float64) []float64 {
+// Generates a slice of positive float64s.
+func GenSliceFloat(size int, floatSize float64, seed int64) []float64 {
 	var slice []float64
+	r := rand.New(rand.NewSource(seed))
 	for i := 0; i < size; i++ {
-		slice = append(slice, rand.Float64()*floatSize)
+		slice = append(slice, r.Float64()*floatSize)
 	}
 	return slice
 }
 
+// Generates an empty slice.
 func GenSliceEmpty(size int) []int {
-	return make([]int, 100)
+	return make([]int, size)
 }
 
+// Returns nil.
 func GenSliceNil() []int {
 	return nil
 }
 
+// Checks if slice is sorted in ascending order.
 func IsSorted[O types.Ordered](slice []O) bool {
 	for i := 1; i < len(slice); i++ {
 		if slice[i] < slice[i-1] {
@@ -67,22 +76,19 @@ func IsSorted[O types.Ordered](slice []O) bool {
 	return true
 }
 
-// The following was created by "icza" and modified by "moorara"
+// Created by "icza" and modified by "moorara" original can be found at:
 // https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const (
-	letterIdxBits = 6
-	letterIdxMask = 1<<letterIdxBits - 1
-	letterIdxMax  = 63 / letterIdxBits
-)
+func RandString(n int, seed int64) (randStr string) {
+	letterBytes := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	letterIdxBits := 6
+	var letterIdxMask int64 = 1<<letterIdxBits - 1
+	letterIdxMax := 63 / letterIdxBits
 
-var src = rand.NewSource(time.Now().UnixNano())
-
-func RandString(n int) (randStr string) {
+	r := rand.New(rand.NewSource(seed))
 	b := make([]byte, n)
-	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+	for i, cache, remain := n-1, r.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = src.Int63(), letterIdxMax
+			cache, remain = r.Int63(), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			b[i] = letterBytes[idx]
