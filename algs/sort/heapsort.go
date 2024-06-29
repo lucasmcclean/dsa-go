@@ -3,17 +3,6 @@ package sort
 import "github.com/ljmcclean/dsa-go/types"
 
 func HeapSort[O types.Ordered](arr []O) {
-	if arr == nil {
-		return
-	} else if len(arr) == 1 {
-		return
-	}
-	UHeapSort(arr)
-}
-
-// Bypasses the check made by Sort to ensure arr isn't nil
-// and that the arr is longer than one element.
-func UHeapSort[O types.Ordered](arr []O) {
 	length := len(arr)
 	heapify(arr, length)
 	for i := length - 1; i >= 0; i-- {
