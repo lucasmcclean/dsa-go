@@ -1,13 +1,8 @@
 package stack
 
-import (
-	"sync"
+import "sync"
 
-	"github.com/ljmcclean/dsa-go/types"
-)
-
-// Not protected from paralell read/writes. Use the normal stack
-// if you are accessing this data concurrently.
+// An UnsafeStack is not protected from concurrent read/writes.
 type UnsafeStack[T any] struct {
 	length   int
 	Elements []T
@@ -22,33 +17,33 @@ func Unsafe[T any](capacity int, elems ...T) (stack *UnsafeStack[T]) {
 	return stack
 }
 
-func (stack *UnsafeStack[T]) Push(elem T) {
-	stack.Elements = append(stack.Elements, elem)
-	stack.length++
+func (stack *UnsafeStack[T]) Push(elem ...T) {
+	stack.Elements = append(stack.Elements, elem...)
+	stack.length += len(elem)
 }
 
-func (stack *UnsafeStack[T]) Pop() (elem T, err error) {
+func (stack *UnsafeStack[T]) Pop() (elem T) {
 	if stack.length == 0 {
-		return elem, types.ErrEmptySlice
+		return elem
 	}
 	elem = stack.Elements[len(stack.Elements)-1]
 	stack.Elements = stack.Elements[:len(stack.Elements)-1]
 	stack.length--
-	return elem, nil
+	return elem
 }
 
-func (stack *UnsafeStack[T]) Peek() (elem T, err error) {
+func (stack *UnsafeStack[T]) Peek() (elem T) {
 	if stack.length == 0 {
-		return elem, types.ErrEmptySlice
+		return elem
 	}
-	return stack.Elements[len(stack.Elements)-1], nil
+	return stack.Elements[len(stack.Elements)-1]
 }
 
 func (stack *UnsafeStack[T]) Len() (length int) {
 	return stack.length
 }
 
-// Implements a RWMutex for safe concurrent access.
+// Stack is safe for concurrent read/writes.
 type Stack[T any] struct {
 	mu    sync.RWMutex
 	Stack UnsafeStack[T]
@@ -60,19 +55,19 @@ func New[T any](capacity int, elems ...T) (stack *Stack[T]) {
 	}
 }
 
-func (s *Stack[T]) Push(elem T) {
+func (s *Stack[T]) Push(elem ...T) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.Stack.Push(elem)
+	s.Stack.Push(elem...)
 }
 
-func (s *Stack[T]) Pop() (elem T, err error) {
+func (s *Stack[T]) Pop() (elem T) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.Stack.Pop()
 }
 
-func (s *Stack[T]) Peek() (elem T, err error) {
+func (s *Stack[T]) Peek() (elem T) {
 	s.mu.RLock()
 	s.mu.RUnlock()
 	return s.Stack.Peek()

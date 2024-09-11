@@ -1,38 +1,58 @@
 package sort
 
 import (
+	"math"
+
+	"github.com/ljmcclean/dsa-go/ds/stack"
 	"github.com/ljmcclean/dsa-go/types"
 )
 
-const insertionCutoff = 25
+const insertionCutoff = 17
 
-// Optimized for case of duplicate elements.
+func maxStackSize(length int) int {
+	return (int(math.Log2(float64(length))) + 3) * 2
+}
+
+// QuickSort is optimized for the case of duplicate elements.
 func QuickSort[O types.Ordered](arr []O) {
-	for {
-		if len(arr) < insertionCutoff {
-			InsertionSort(arr)
-			return
+	stk := stack.Unsafe(maxStackSize(len(arr)), 0, len(arr))
+	for stk.Len() != 0 {
+		hi, lo := stk.Pop(), stk.Pop()
+		if hi-lo < insertionCutoff {
+			InsertionSort(arr[lo:hi])
+			continue
 		}
-		piv := arr[ninther(arr)]
-		l, r := partition(arr, piv)
-		QuickSort(arr[:l])
-		arr = arr[r:]
+		piv := arr[ninther(arr[lo:hi])+lo]
+		pil, pir := partition(arr[lo:hi], piv)
+		pil += lo
+		pir += lo
+		if pil > lo {
+			stk.Push(lo, pil)
+		}
+		if pir < hi {
+			stk.Push(pir, hi)
+		}
 	}
 }
 
-// Optimized for case of mostly unique elements.
+// QuickSortUnique is optimized for the case of primarily unique elements.
 func QuickSortUnique[O types.Ordered](arr []O) {
-	if len(arr) < insertionCutoff {
-		InsertionSort(arr)
-		return
-	}
-	piv := arr[ninther(arr)]
-	l, r := hoarePartition(arr, piv)
-	if r > 0 {
-		QuickSortUnique(arr[:r+1])
-	}
-	if l < len(arr)-1 {
-		QuickSortUnique(arr[l:])
+	stk := stack.Unsafe(maxStackSize(len(arr)), 0, len(arr))
+	for stk.Len() != 0 {
+		hi, lo := stk.Pop(), stk.Pop()
+		if hi-lo < insertionCutoff {
+			InsertionSort(arr[lo:hi])
+			continue
+		}
+		piv := arr[ninther(arr[lo:hi])+lo]
+		pi := hoarePartition(arr[lo:hi], piv)
+		pi += lo
+		if pi+1 > lo {
+			stk.Push(lo, pi+1)
+		}
+		if pi < hi {
+			stk.Push(pi, hi)
+		}
 	}
 }
 
@@ -46,8 +66,8 @@ func partition[O types.Ordered](arr []O, piv O) (lPivIdx, rPivIdx int) {
 			i++
 			l++
 		case arr[i] > piv:
-			arr[i], arr[r-1] = arr[r-1], arr[i]
 			r--
+			arr[i], arr[r] = arr[r], arr[i]
 		default:
 			i++
 		}
@@ -56,31 +76,31 @@ func partition[O types.Ordered](arr []O, piv O) (lPivIdx, rPivIdx int) {
 }
 
 // Hoare partition for case of mostly unique elements.
-func hoarePartition[O types.Ordered](arr []O, piv O) (lPivIdx, rPivIdx int) {
+func hoarePartition[O types.Ordered](arr []O, piv O) (pivIdx int) {
 	l, r := 0, len(arr)-1
-	for l <= r {
+	for {
 		for arr[l] < piv {
 			l++
 		}
 		for arr[r] > piv {
 			r--
 		}
-		if l <= r {
-			arr[l], arr[r] = arr[r], arr[l]
-			l++
-			r--
+		if l >= r {
+			return r
 		}
+		arr[l], arr[r] = arr[r], arr[l]
+		l++
+		r--
 	}
-	return l, r
 }
 
-// Implementation of Tukey's ninther (median of medians) to
-// ensure more consistent performance.
+// Tukey's ninther (median of medians) to ensure more consistent performance.
 func ninther[O types.Ordered](arr []O) (pivIdx int) {
 	n := len(arr)
-	a := medOfThree(arr, 0, n/6, n/3)
-	b := medOfThree(arr, n/3, 5*n/6, 2*n/3)
-	c := medOfThree(arr, 2*n/3, 5*n/6, n-1)
+	var a, b, c int
+	a = medOfThree(arr, 0, n/6, n/3)
+	b = medOfThree(arr, n/3, 5*n/6, 2*n/3)
+	c = medOfThree(arr, 2*n/3, 5*n/6, n-1)
 	return medOfThree(arr, a, b, c)
 }
 
